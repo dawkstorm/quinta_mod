@@ -1,0 +1,40 @@
+	{
+	"schemaVersion": 1,
+	"id": "quinta",
+	"version": "${version}",
+	"name": "Quinta",
+	"description": "Mod that adds a new ultimate weapon for the endgame with progression to it",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/quinta/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.dawkmeow.quinta.Quinta"
+		],
+		"fabric-datagen": [
+			"net.dawkmeow.quinta.QuintaDataGenerator"
+		],
+		"client": [
+			"net.dawkmeow.quinta.QuintaClient"
+		]
+	},
+	"mixins": [
+		"quinta.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.16.2",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
