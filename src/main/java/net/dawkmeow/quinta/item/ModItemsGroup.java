@@ -14,9 +14,10 @@ public class ModItemsGroup {
     public static final ItemGroup QUINTA_GROUP = Registry.register(Registries.ITEM_GROUP,
             Identifier.of(Quinta.MOD_ID, "quinta_items"),
             FabricItemGroup.builder().
-                    displayName(Text.translatable("itemGroup.quinta.quita_items"))
-                    .icon(() -> new ItemStack(ModItems.AIR_STAFF)).entries(((displayContext, entries) -> {
-                        entries.add(ModItems.AIR_STAFF);
+                    displayName(Text.translatable("itemGroup.quinta.quinta_items"))
+                    .icon(() -> new ItemStack(ModItems.WIND_STAFF)).entries(((displayContext, entries) -> {
+                        entries.add(ModItems.WIND_STAFF);
+                        entries.add(ModItems.MANA_COLLECTOR);
                     }))
                     .build());
 

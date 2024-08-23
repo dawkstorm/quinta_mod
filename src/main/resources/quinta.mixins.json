@@ -3,7 +3,9 @@
 	"package": "net.dawkmeow.quinta.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"ExampleMixin",
+		"ModEntityDataSaverMixin",
+		"ModPlayerDeathMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
