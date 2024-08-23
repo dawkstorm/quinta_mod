@@ -12,6 +12,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.PatrolEntity;
+import net.minecraft.entity.mob.SpiderEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -116,15 +118,20 @@ public class ManaCollector extends Item {
 
     @Override
     public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-        if(target.isDead() && attacker instanceof PlayerEntity player){
-            if(target instanceof PassiveEntity entity){
-                ManaData.addMana((IEntityDataSaver) attacker, 1.f);
+
+        if(attacker instanceof PlayerEntity player){
+            if(!player.isCreative()){
+                stack.damage(1, player, EquipmentSlot.MAINHAND);
             }
-            else if(target instanceof HostileEntity entity){
-                ManaData.removeMana((IEntityDataSaver) attacker, 1.f);
+            if(target.isDead()) {
+                if (target instanceof PassiveEntity entity || target instanceof SpiderEntity || target instanceof PatrolEntity) {
+                    ManaData.addMana((IEntityDataSaver) attacker, 1.f);
+                } else if (target instanceof HostileEntity entity) {
+                    ManaData.removeMana((IEntityDataSaver) attacker, 1.f);
+                }
+                player.sendMessage(Text.literal("Mana: " + ((IEntityDataSaver) player).getPersistentData()
+                        .getFloat("mana")).fillStyle(Style.EMPTY.withColor(Formatting.AQUA)), true);
             }
-            player.sendMessage(Text.literal("Mana: " + ((IEntityDataSaver) player).getPersistentData()
-                    .getFloat("mana")).fillStyle(Style.EMPTY.withColor(Formatting.AQUA)), true);
         }
         return super.postHit(stack, target, attacker);
     }
