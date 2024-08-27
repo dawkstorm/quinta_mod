@@ -1,5 +1,6 @@
 package net.dawkmeow.quinta.util;
 
+import net.dawkmeow.quinta.Quinta;
 import net.minecraft.nbt.NbtCompound;
 
 public class ManaData {
@@ -30,6 +31,12 @@ public class ManaData {
         }
 
         nbt.putFloat("mana", mana);
+        return mana;
+    }
+
+    public static float getMana(IEntityDataSaver player){
+        NbtCompound nbt = player.getPersistentData();
+        float mana = nbt.getFloat("mana");
         return mana;
     }
 }

@@ -1,6 +1,8 @@
 package net.dawkmeow.quinta.item.custom;
 
 import net.dawkmeow.quinta.Quinta;
+import net.dawkmeow.quinta.util.IEntityDataSaver;
+import net.dawkmeow.quinta.util.ManaData;
 import net.minecraft.block.BlockState;
 import net.minecraft.component.type.AttributeModifierSlot;
 import net.minecraft.component.type.AttributeModifiersComponent;
@@ -10,6 +12,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -18,14 +21,17 @@ import net.minecraft.world.World;
 
 enum AirWandModes {
     LIFT_ENTITIES,
-    KNOCKBACK_ENTITIES,
     SCOOTER,
+    KNOCKBACK_ENTITIES,
     BUBBLE_UNDER_WATER,
     SHIELD
 }
 public class AirWand extends Item {
     public int level = 0;
     public AirWandModes mode;
+    public LivingEntity capturedEntity;
+    public boolean isEnabled;
+
     public AirWand(Settings settings) {
         super(settings);
         level = 0;
@@ -33,25 +39,64 @@ public class AirWand extends Item {
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack) {
-        return UseAction.CROSSBOW;
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
+        if(capturedEntity != null) {
+            user.setCurrentHand(hand);
+            isEnabled = true;
+            return TypedActionResult.consume(user.getStackInHand(hand));
+        }
+        return TypedActionResult.fail(user.getStackInHand(hand));
+    }
+
+    @Override
+    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
+        return 100000;
+    }
+
+    public double distance;
+
+    @Override
+    public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+        super.usageTick(world, user, stack, remainingUseTicks);
+        if(!world.isClient() && !capturedEntity.isDead() && isEnabled &&
+                capturedEntity != user && ((IEntityDataSaver) user).getPersistentData().getFloat("mana") > 0) {
+            switch (mode) {
+                case LIFT_ENTITIES:
+                    ManaData.removeMana((IEntityDataSaver) user, 0.05f);
+                    Vec3d newPos = new Vec3d(user.getRotationVector().getX() * distance,
+                            user.getRotationVector().getY() * distance,
+                            user.getRotationVector().getZ() * distance);
+                    newPos = new Vec3d(newPos.getX() + user.getPos().getX(),
+                            newPos.getY() + user.getPos().getY() + 0.5d,
+                            newPos.getZ() + user.getPos().getZ());
+
+                    capturedEntity.requestTeleport(newPos.getX(), newPos.getY(), newPos.getZ());
+                    break;
+            }
+            if(user instanceof PlayerEntity player) {
+                player.sendMessage(Text.literal("Mana: " + ((IEntityDataSaver) player).getPersistentData()
+                        .getFloat("mana")).fillStyle(Style.EMPTY.withColor(Formatting.AQUA)), true);
+                if(((IEntityDataSaver) player).getPersistentData().getFloat("mana") <= 0){
+                    onStoppedUsing(stack, world, user, remainingUseTicks);
+                }
+            }
+
+        }
+    }
+
+    @Override
+    public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks) {
+        super.onStoppedUsing(stack, world, user, remainingUseTicks);
+        isEnabled = false;
+        capturedEntity.setNoGravity(false);;
+        capturedEntity = user;
     }
 
     @Override
     public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand) {
-        double distance = user.distanceTo(entity);
-        switch (mode){
-            case LIFT_ENTITIES:
-                Vec3d newPos = new Vec3d(user.getRotationVector().getX() * distance,
-                        user.getRotationVector().getY() * distance,
-                        user.getRotationVector().getZ() * distance);
-                newPos = new Vec3d(newPos.getX() + user.getPos().getX(),
-                        newPos.getY() + user.getPos().getY() + 0.5d,
-                        newPos.getZ() + user.getPos().getZ());
-
-                entity.teleport(newPos.getX(), newPos.getY(), newPos.getZ(), false);
-                break;
-        }
+        capturedEntity = entity;
+        distance = user.distanceTo(capturedEntity);
+        capturedEntity.setNoGravity(true);
         return super.useOnEntity(stack, user, entity, hand);
     }
 
@@ -71,7 +116,7 @@ public class AirWand extends Item {
                 )
                 .add(
                         EntityAttributes.GENERIC_ATTACK_KNOCKBACK,
-                        new EntityAttributeModifier(BASE_KNOCKBACK_MODIFIER_ID, 2.0, EntityAttributeModifier.Operation.ADD_VALUE),
+                        new EntityAttributeModifier(BASE_KNOCKBACK_MODIFIER_ID, 1.0, EntityAttributeModifier.Operation.ADD_VALUE),
                         AttributeModifierSlot.MAINHAND
                 )
                 .build();

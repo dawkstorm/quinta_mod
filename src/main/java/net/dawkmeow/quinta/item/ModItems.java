@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier;
 
 public class ModItems {
 
-    public static final Item WIND_STAFF = registerItem("air_wand",
+    public static final Item AIR_WAND = registerItem("air_wand",
             new AirWand(new Item.Settings().attributeModifiers(AirWand.createAttributeModifiers()).maxCount(1)));
 
     public static final Item MANA_COLLECTOR = registerItem("mana_collector",

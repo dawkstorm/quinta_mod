@@ -2,5 +2,9 @@
   "item.quinta.air_wand": "Air Wand",
   "itemGroup.quinta.quinta_items": "Quinta Items",
   "item.quinta.mana_collector": "Mana Collector",
-  "quinta.message.must_be_used_on_grass": "Mana Collector must be used on appropriate blocks "
+  "quinta.message.must_be_used_on_grass": "Mana Collector must be used on appropriate blocks ",
+  "key.quinta.attack_wand_key": "Attack wand key",
+  "key.category.quinta.mana": "Quinta keys",
+  "key.quinta.manipulate_one": "Manipulate 1",
+  "key.quinta.manipulate_two": "Manipulate 2"
 }

@@ -6,10 +6,10 @@ import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 
-public record ManaCollectPacket(String test) implements CustomPayload {
-    public static final Id<ManaCollectPacket> ID = new Id<>(ModNetworking.TEST_ID);
-    public static final PacketCodec<RegistryByteBuf, ManaCollectPacket> CODEC = PacketCodec.tuple(
-            PacketCodecs.STRING, ManaCollectPacket::test, ManaCollectPacket::new
+public record Manipulate2KeyPacket(String test) implements CustomPayload {
+    public static final Id<Manipulate2KeyPacket> ID = new Id<>(ModNetworking.MANIPULATE_2_ID);
+    public static final PacketCodec<RegistryByteBuf, Manipulate2KeyPacket> CODEC = PacketCodec.tuple(
+            PacketCodecs.STRING, Manipulate2KeyPacket::test, Manipulate2KeyPacket::new
     );
 
     @Override

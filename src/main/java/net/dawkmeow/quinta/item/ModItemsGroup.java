@@ -15,8 +15,8 @@ public class ModItemsGroup {
             Identifier.of(Quinta.MOD_ID, "quinta_items"),
             FabricItemGroup.builder().
                     displayName(Text.translatable("itemGroup.quinta.quinta_items"))
-                    .icon(() -> new ItemStack(ModItems.WIND_STAFF)).entries(((displayContext, entries) -> {
-                        entries.add(ModItems.WIND_STAFF);
+                    .icon(() -> new ItemStack(ModItems.AIR_WAND)).entries(((displayContext, entries) -> {
+                        entries.add(ModItems.AIR_WAND);
                         entries.add(ModItems.MANA_COLLECTOR);
                     }))
                     .build());

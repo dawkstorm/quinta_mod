@@ -196,7 +196,8 @@ public class ManaCollector extends Item {
             return ActionResult.SUCCESS;
         }
         else {
-            context.getPlayer().sendMessage(Text.translatable("quinta.message.must_be_used_on_grass"));
+            context.getPlayer().sendMessage(Text.translatable("quinta.message.must_be_used_on_grass")
+                    .fillStyle(Style.EMPTY.withColor(Formatting.DARK_RED)), true);
             return ActionResult.FAIL;
         }
     }
